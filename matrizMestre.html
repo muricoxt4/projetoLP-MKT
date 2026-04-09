@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriz Mestre — Componentes UI</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   PALETA ROXA — CSS VARIABLES
+   ═══════════════════════════════════════════ */
+:root {
+  /* Core Purple */
+  --purple-50:  #f5f0ff;
+  --purple-100: #ede5ff;
+  --purple-200: #d4c4ff;
+  --purple-300: #b89dff;
+  --purple-400: #9b6dff;
+  --purple-500: #7c3aed;
+  --purple-600: #6d28d9;
+  --purple-700: #5b21b6;
+  --purple-800: #4c1d95;
+  --purple-900: #3b0f7a;
+  --purple-950: #1e0a3e;
+
+  /* Accent — Lilás / Lavanda */
+  --lavender-300: #c4b5fd;
+  --lavender-400: #a78bfa;
+  --lavender-500: #8b5cf6;
+
+  /* Accent — Fuchsia / Magenta */
+  --fuchsia-400: #e879f9;
+  --fuchsia-500: #d946ef;
+  --fuchsia-600: #c026d3;
+
+  /* Neutrals */
+  --white:  #ffffff;
+  --gray-50:  #faf9fc;
+  --gray-100: #f3f1f6;
+  --gray-200: #e8e5ee;
+  --gray-300: #d1cdd9;
+  --gray-600: #6b6478;
+  --gray-800: #2d2640;
+  --gray-900: #1a1428;
+  --black: #0d0a14;
+
+  /* Functional */
+  --success: #10b981;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --shadow-soft: 0 4px 20px rgba(124, 58, 237, 0.08);
+  --shadow-float: 0 20px 50px rgba(124, 58, 237, 0.12);
+  --transition-smooth: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-snappy: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--gray-800);
+  background: var(--gray-50);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 { font-family: 'Sora', sans-serif; line-height: 1.2; }
+
+/* ═══════════════════════════════════════════
+   TABLE OF CONTENTS (TOC)
+   ═══════════════════════════════════════════ */
+.toc {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+}
+.toc h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--purple-800);
+  margin-bottom: 8px;
+}
+.toc .subtitle {
+  color: var(--gray-600);
+  font-size: 1.05rem;
+  margin-bottom: 36px;
+}
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.toc-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--gray-800);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  transition: var(--transition-snappy);
+}
+.toc-item:hover {
+  border-color: var(--purple-300);
+  background: var(--purple-50);
+  transform: translateX(4px);
+}
+.toc-number {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--white);
+  background: var(--purple-500);
+  width: 30px; height: 30px;
+  border-radius: var(--radius-full);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.toc-label { font-weight: 500; font-size: 0.95rem; }
+
+/* ═══════════════════════════════════════════
+   SECTION WRAPPER
+   ═══════════════════════════════════════════ */
+.section {
+  padding: 80px 24px;
+  border-top: 1px solid var(--gray-200);
+}
+.section:nth-child(even) { background: var(--white); }
+
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-label {
+  display: inline-block;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--lavender-500);
+  background: var(--purple-50);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--purple-900);
+  margin-bottom: 12px;
+}
+.section-desc {
+  color: var(--gray-600);
+  max-width: 600px;
+  margin-bottom: 40px;
+  font-size: 0.95rem;
+}
+
+/* Código reference tag */
+.code-ref {
+  display: inline-block;
+  background: var(--gray-900);
+  color: var(--lavender-300);
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+/* ═══════════════════════════════════════════
+   1. FIGMA — VIDEO CONTAINER
+   ═══════════════════════════════════════════ */
+.video-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--purple-100), var(--purple-200));
+  line-height: 0;
+  box-shadow: var(--shadow-float);
+}
+.figma-style-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 16/9;
+}
+/* Placeholder quando não tem vídeo */
+.video-placeholder {
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  line-height: 1.4;
+  background: linear-gradient(160deg, var(--purple-800), var(--purple-950));
+}
+.video-placeholder svg { opacity: 0.5; }
+.video-placeholder span {
+  font-size: 0.85rem;
+  color: var(--lavender-300);
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════
+   2. NEIL PATEL — PARTNERS SECTION
+   ═══════════════════════════════════════════ */
+.partners-section {
+  position: relative;
+  padding: 60px 0;
+  text-align: center;
+  overflow: hidden;
+}
+.world-map-overlay {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%; height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500"><circle cx="120" cy="180" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="150" cy="160" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="180" cy="170" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="210" cy="190" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="250" cy="175" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="280" cy="200" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="310" cy="210" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="350" cy="185" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="400" cy="150" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="430" cy="170" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="460" cy="140" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="490" cy="165" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="520" cy="190" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="550" cy="210" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="580" cy="180" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="620" cy="200" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="650" cy="175" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="700" cy="230" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="740" cy="250" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="780" cy="220" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="820" cy="190" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="860" cy="240" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="900" cy="260" r="2" fill="%237c3aed" opacity="0.3"/><circle cx="140" cy="220" r="1.5" fill="%237c3aed" opacity="0.2"/><circle cx="300" cy="150" r="1.5" fill="%237c3aed" opacity="0.2"/><circle cx="500" cy="120" r="1.5" fill="%237c3aed" opacity="0.2"/><circle cx="660" cy="145" r="1.5" fill="%237c3aed" opacity="0.2"/><circle cx="750" cy="170" r="1.5" fill="%237c3aed" opacity="0.2"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
+}
+.container-partners {
+  position: relative;
+  z-index: 2;
+}
+.partners-header .tagline {
+  color: var(--lavender-500);
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 10px;
+}
+.partners-header h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--purple-900);
+  margin-bottom: 50px;
+}
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 32px;
+  align-items: center;
+  justify-items: center;
+}
+.partner-item {
+  width: 130px; height: 54px;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--gray-800);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.75;
+  transition: var(--transition-smooth);
+}
+.partner-item:hover {
+  opacity: 1;
+  background: var(--purple-100);
+  border-color: var(--purple-300);
+  color: var(--purple-700);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.1);
+}
+
+/* ═══════════════════════════════════════════
+   3. RAMOTION — ZOOM VIDEO
+   ═══════════════════════════════════════════ */
+.zoom-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--purple-950);
+  padding: 60px 24px;
+  overflow: hidden;
+}
+.zoom-container {
+  width: 75%;
+  max-width: 1000px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  transition: transform 0.15s ease-out, border-radius 0.5s ease, width 0.5s ease;
+  will-change: transform;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+}
+.zoom-container.expanded {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0;
+}
+.zoom-element {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.15);
+  transition: transform 0.15s ease-out;
+}
+.zoom-placeholder {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--purple-700), var(--fuchsia-600));
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 10px;
+}
+.zoom-placeholder span {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+}
+.zoom-hint {
+  text-align: center;
+  color: var(--lavender-300);
+  font-size: 0.8rem;
+  margin-top: 24px;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════
+   4. RAMOTION — BOTÃO LET'S TALK
+   ═══════════════════════════════════════════ */
+.btn-showcase {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+}
+.btn-ramotion {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 45px;
+  border: 2px solid var(--purple-700);
+  border-radius: var(--radius-full);
+  color: var(--purple-700);
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  overflow: hidden;
+  transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  cursor: pointer;
+}
+.btn-text { position: relative; z-index: 3; }
+.btn-fill {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--purple-600), var(--fuchsia-500));
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+.btn-ramotion:hover { color: var(--white); }
+.btn-ramotion:hover .btn-fill { transform: translateY(-100%); }
+
+/* Variação: estilo invertido */
+.btn-ramotion.inverted {
+  border-color: var(--lavender-400);
+  color: var(--lavender-400);
+  background: transparent;
+}
+.btn-ramotion.inverted .btn-fill {
+  background: linear-gradient(135deg, var(--lavender-400), var(--fuchsia-400));
+}
+.btn-ramotion.inverted:hover { color: var(--purple-950); }
+
+/* ═══════════════════════════════════════════
+   5. CUBERTO — CONTACT CIRCLE
+   ═══════════════════════════════════════════ */
+.contact-demo {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+.cb-contact-circle {
+  position: relative;
+  width: 140px; height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.cb-contact-circle:hover {
+  transform: translateY(-10px);
+}
+.rotating-text {
+  position: absolute;
+  width: 100%; height: 100%;
+  animation: rotateText 12s linear infinite;
+  fill: var(--purple-700);
+  font-size: 8px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+.inner-avatar {
+  width: 65px; height: 65px;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 2;
+  background: linear-gradient(135deg, var(--purple-400), var(--fuchsia-500));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  color: var(--white);
+}
+@keyframes rotateText {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════
+   6. CUBERTO — HEADER
+   ═══════════════════════════════════════════ */
+.cb-header-demo {
+  position: relative;
+  background: var(--purple-950);
+  border-radius: var(--radius-md);
+  padding: 0;
+  overflow: hidden;
+}
+.cb-header {
+  position: relative;
+  width: 100%;
+  padding: 24px 0;
+  z-index: 100;
+  mix-blend-mode: difference;
+}
+.cb-header-container {
+  max-width: 95%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cb-logo a {
+  text-decoration: none;
+  color: var(--white);
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.5px;
+}
+.cb-nav-list {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  gap: 36px;
+}
+.cb-nav-link {
+  text-decoration: none;
+  color: var(--white);
+  font-weight: 400;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+.cb-nav-link:hover { opacity: 1; }
+.cb-menu-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--white);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  transition: var(--transition-snappy);
+}
+.cb-menu-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.4);
+}
+.header-bg-strip {
+  height: 200px;
+  background: linear-gradient(180deg, var(--purple-950), var(--purple-800));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lavender-300);
+  font-size: 0.8rem;
+  opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════
+   7. CUBERTO — FLOATING CARD (Growth)
+   ═══════════════════════════════════════════ */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+.cb-floating-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 36px;
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  cursor: pointer;
+  will-change: transform, box-shadow;
+  border: 1px solid var(--gray-200);
+}
+.cb-floating-card:hover {
+  transform: translateY(-12px);
+  box-shadow: var(--shadow-float);
+  border-color: var(--purple-200);
+}
+.card-tag {
+  display: inline-block;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--purple-500);
+  background: var(--purple-50);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-bottom: 16px;
+}
+.card-content h3 {
+  font-size: 1.15rem;
+  color: var(--purple-900);
+  margin-bottom: 8px;
+}
+.card-content p {
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   8. FRAMER — ANIMATED BAR CHART
+   ═══════════════════════════════════════════ */
+.framer-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 200px;
+  padding: 24px;
+  background: var(--purple-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--purple-100);
+}
+.chart-bar {
+  flex: 1;
+  background: linear-gradient(180deg, var(--purple-500), var(--purple-700));
+  border-radius: 6px 6px 0 0;
+  height: var(--h);
+  transform-origin: bottom;
+  transform: scaleY(0);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d);
+}
+.reveal.is-visible .chart-bar { transform: scaleY(1); }
+
+/* ═══════════════════════════════════════════
+   9. FRAMER — SEO SCORE CIRCLE
+   ═══════════════════════════════════════════ */
+.widgets-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: center;
+}
+.seo-widget {
+  position: relative;
+  width: 150px; height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.seo-circle {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+}
+.seo-circle circle { fill: none; stroke-width: 7; stroke-linecap: round; }
+.circle-bg { stroke: var(--purple-100); }
+.circle-progress {
+  stroke: var(--purple-500);
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible .circle-progress { stroke-dashoffset: 0; }
+.seo-score {
+  font-family: 'Sora', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--purple-800);
+}
+.seo-label {
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  margin-top: -4px;
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════
+   10. STOCK LINE CHARTS
+   ═══════════════════════════════════════════ */
+.charts-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+.stock-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  border: 1px solid var(--gray-200);
+  transition: var(--transition-smooth);
+  overflow: hidden;
+}
+.stock-card:hover {
+  border-color: var(--purple-200);
+  box-shadow: var(--shadow-soft);
+}
+.stock-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.stock-card-header h4 {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.95rem;
+  color: var(--purple-900);
+}
+.stock-card-header .stock-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--purple-800);
+}
+.stock-card-header .stock-change {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+.stock-change.up { color: var(--success); background: rgba(16,185,129,0.1); }
+.stock-change.down { color: #ef4444; background: rgba(239,68,68,0.1); }
+.stock-chart-svg {
+  width: 100%;
+  height: 120px;
+  overflow: visible;
+}
+.stock-chart-svg .chart-line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  transition: stroke-dashoffset 2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.stock-chart-svg .chart-area {
+  opacity: 0;
+  transition: opacity 1s ease 0.8s;
+}
+.stock-chart-svg .chart-dot {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transition-delay: 2s;
+}
+.reveal.is-visible .chart-line { stroke-dashoffset: 0; }
+.reveal.is-visible .chart-area { opacity: 1; }
+.reveal.is-visible .chart-dot { opacity: 1; }
+
+/* Grid lines */
+.stock-chart-svg .grid-line {
+  stroke: var(--gray-200);
+  stroke-width: 0.5;
+  stroke-dasharray: 4 4;
+}
+/* Interactive hover elements */
+.stock-chart-svg .hover-line {
+  stroke: var(--gray-300);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+.stock-chart-svg .hover-dot {
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+.stock-card:hover .hover-line,
+.stock-card:hover .hover-dot { opacity: 1; }
+.chart-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--gray-900);
+  color: var(--white);
+  font-family: 'Sora', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+  transform: translate(-50%, -140%);
+}
+.chart-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--gray-900);
+}
+.stock-card { position: relative; }
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.65rem;
+  color: var(--gray-600);
+}
+
+/* ═══════════════════════════════════════════
+   11. FOOTER
+   ═══════════════════════════════════════════ */
+.site-footer {
+  background: var(--purple-950);
+  color: var(--lavender-300);
+  padding: 80px 24px 0;
+  position: relative;
+  overflow: hidden;
+}
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--purple-700) 0%, transparent 70%);
+  opacity: 0.08;
+  pointer-events: none;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.footer-brand h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 14px;
+}
+.footer-brand p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  opacity: 0.6;
+  max-width: 320px;
+  margin-bottom: 24px;
+}
+.footer-social {
+  display: flex;
+  gap: 12px;
+}
+.footer-social a {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lavender-300);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: var(--transition-snappy);
+}
+.footer-social a:hover {
+  background: var(--purple-600);
+  border-color: var(--purple-600);
+  color: var(--white);
+}
+.footer-col h5 {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 12px; }
+.footer-col ul a {
+  color: var(--lavender-300);
+  text-decoration: none;
+  font-size: 0.88rem;
+  opacity: 0.6;
+  transition: var(--transition-snappy);
+}
+.footer-col ul a:hover { opacity: 1; color: var(--white); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 0;
+  margin-top: 0;
+}
+.footer-bottom span {
+  font-size: 0.78rem;
+  opacity: 0.4;
+}
+.footer-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-full);
+  color: var(--lavender-300);
+  text-decoration: none;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: var(--transition-snappy);
+  position: relative;
+  overflow: hidden;
+}
+.footer-cta:hover {
+  background: var(--purple-600);
+  border-color: var(--purple-600);
+  color: var(--white);
+}
+.footer-cta .arrow {
+  transition: transform 0.3s ease;
+}
+.footer-cta:hover .arrow { transform: translateX(4px); }
+
+/* Rotating circle in footer */
+.footer-circle-wrap {
+  position: absolute;
+  right: 40px;
+  top: 40px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  .charts-showcase { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════
+   REVEAL ANIMATION (global)
+   ═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════
+   PALETA VISUAL SWATCH
+   ═══════════════════════════════════════════ */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+.swatch {
+  width: 56px; height: 56px;
+  border-radius: var(--radius-sm);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: 2px solid transparent;
+}
+.swatch:hover {
+  transform: scale(1.15);
+  border-color: var(--purple-300);
+}
+.swatch::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: var(--gray-600);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.swatch:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .section { padding: 50px 16px; }
+  .zoom-container { width: 95%; }
+  .contact-demo { justify-content: center; }
+  .btn-showcase { justify-content: center; }
+  .widgets-row { justify-content: center; }
+  .toc-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     TABLE OF CONTENTS
+     ═══════════════════════════════════ -->
+<div class="toc">
+  <h1>Matriz Mestre</h1>
+  <p class="subtitle">Componentes UI clonados &amp; adaptados com paleta roxa.</p>
+  
+  <!-- Paleta Visual -->
+  <div class="palette">
+    <div class="swatch" style="background:var(--purple-50)" data-name="50"></div>
+    <div class="swatch" style="background:var(--purple-100)" data-name="100"></div>
+    <div class="swatch" style="background:var(--purple-200)" data-name="200"></div>
+    <div class="swatch" style="background:var(--purple-300)" data-name="300"></div>
+    <div class="swatch" style="background:var(--purple-400)" data-name="400"></div>
+    <div class="swatch" style="background:var(--purple-500)" data-name="500"></div>
+    <div class="swatch" style="background:var(--purple-600)" data-name="600"></div>
+    <div class="swatch" style="background:var(--purple-700)" data-name="700"></div>
+    <div class="swatch" style="background:var(--purple-800)" data-name="800"></div>
+    <div class="swatch" style="background:var(--purple-900)" data-name="900"></div>
+    <div class="swatch" style="background:var(--purple-950)" data-name="950"></div>
+    <div class="swatch" style="background:var(--lavender-400)" data-name="Lavanda"></div>
+    <div class="swatch" style="background:var(--fuchsia-500)" data-name="Fuchsia"></div>
+  </div>
+
+  <div class="toc-grid">
+    <a href="#sec-figma" class="toc-item">
+      <span class="toc-number">1</span>
+      <span class="toc-label">Figma — Video Container</span>
+    </a>
+    <a href="#sec-neil" class="toc-item">
+      <span class="toc-number">2</span>
+      <span class="toc-label">Neil Patel — Partners</span>
+    </a>
+    <a href="#sec-zoom" class="toc-item">
+      <span class="toc-number">3</span>
+      <span class="toc-label">Ramotion — Zoom Scroll</span>
+    </a>
+    <a href="#sec-btn" class="toc-item">
+      <span class="toc-number">4</span>
+      <span class="toc-label">Ramotion — Botão Fill</span>
+    </a>
+    <a href="#sec-circle" class="toc-item">
+      <span class="toc-number">5</span>
+      <span class="toc-label">Cuberto — Contact Circle</span>
+    </a>
+    <a href="#sec-header" class="toc-item">
+      <span class="toc-number">6</span>
+      <span class="toc-label">Cuberto — Header</span>
+    </a>
+    <a href="#sec-cards" class="toc-item">
+      <span class="toc-number">7</span>
+      <span class="toc-label">Cuberto — Floating Cards</span>
+    </a>
+    <a href="#sec-chart" class="toc-item">
+      <span class="toc-number">8</span>
+      <span class="toc-label">Framer — Bar Chart</span>
+    </a>
+    <a href="#sec-seo" class="toc-item">
+      <span class="toc-number">9</span>
+      <span class="toc-label">Framer — SEO Score</span>
+    </a>
+    <a href="#sec-stock" class="toc-item">
+      <span class="toc-number">10</span>
+      <span class="toc-label">Stock Line Charts</span>
+    </a>
+    <a href="#sec-footer" class="toc-item">
+      <span class="toc-number">11</span>
+      <span class="toc-label">Footer Completo</span>
+    </a>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     1. FIGMA — VIDEO CONTAINER
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-figma">
+  <div class="section-inner">
+    <span class="section-label">Figma</span>
+    <h2 class="section-title">Video Container</h2>
+    <p class="section-desc">Vídeo com auto-play ao entrar na viewport via Intersection Observer. Bordas suaves e sombra elegante.</p>
+    <span class="code-ref">data-scroll-video · IntersectionObserver</span>
+
+    <div class="video-container reveal" data-scroll-video>
+      <div class="video-placeholder">
+        <svg width="48" height="48" fill="none" viewBox="0 0 24 24"><path d="M8 5.14v13.72a1 1 0 001.5.86l11.2-6.86a1 1 0 000-1.72L9.5 4.28A1 1 0 008 5.14z" fill="#c4b5fd"/></svg>
+        <span>Substitua por &lt;video src="..."&gt;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     2. NEIL PATEL — PARTNERS
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-neil">
+  <div class="section-inner">
+    <span class="section-label">Neil Patel</span>
+    <h2 class="section-title">Partners / Logos Grid</h2>
+    <p class="section-desc">Grid de logos com mapa-múndi pontilhado ao fundo. Logos em grayscale que ganham cor no hover.</p>
+    <span class="code-ref">world-map-overlay · grayscale filter</span>
+
+    <section class="partners-section reveal">
+      <div class="world-map-overlay"></div>
+      <div class="container-partners">
+        <div class="partners-header">
+          <span class="tagline">Globalmente reconhecida</span>
+          <h2>Trabalhamos com as melhores marcas</h2>
+        </div>
+        <div class="partners-grid">
+          <div class="partner-item">Google</div>
+          <div class="partner-item">Meta</div>
+          <div class="partner-item">Adobe</div>
+          <div class="partner-item">Nike</div>
+          <div class="partner-item">Stripe</div>
+          <div class="partner-item">Figma</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     3. RAMOTION — ZOOM VIDEO
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-zoom" style="background:var(--purple-950); padding: 0;">
+  <div class="zoom-section">
+    <div style="width:100%; max-width:1100px; margin:0 auto;">
+      <div style="padding: 0 24px 20px;">
+        <span class="section-label" style="background:rgba(255,255,255,0.08);">Ramotion</span>
+        <h2 class="section-title" style="color:var(--lavender-300);">Zoom on Scroll</h2>
+        <p class="section-desc" style="color:rgba(255,255,255,0.4);">Container que escala de 80% → 100% conforme o scroll. O vídeo interno faz zoom inverso para efeito "revelação".</p>
+        <span class="code-ref" style="background:rgba(255,255,255,0.08); color:var(--lavender-400);">scroll listener · scale transform</span>
+      </div>
+      <div style="display:flex; justify-content:center; padding-bottom:40px;">
+        <div class="zoom-container" id="zoomContainer">
+          <div class="zoom-placeholder zoom-element" id="zoomElement">
+            <svg width="48" height="48" fill="none" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Role a página para ver o efeito</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     4. RAMOTION — BOTÃO LET'S TALK
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-btn">
+  <div class="section-inner">
+    <span class="section-label">Ramotion</span>
+    <h2 class="section-title">Botão com Fill no Hover</h2>
+    <p class="section-desc">Fundo sólido/gradiente que sobe de baixo para cima ao passar o mouse. Efeito suave com cubic-bezier.</p>
+    <span class="code-ref">btn-fill · translateY(-100%)</span>
+
+    <div class="btn-showcase reveal">
+      <a href="#" class="btn-ramotion" onclick="return false">
+        <span class="btn-text">Let's Talk</span>
+        <div class="btn-fill"></div>
+      </a>
+      <a href="#" class="btn-ramotion" onclick="return false" style="border-color:var(--fuchsia-500); color:var(--fuchsia-500);">
+        <span class="btn-text">Saiba Mais</span>
+        <div class="btn-fill" style="background:linear-gradient(135deg, var(--fuchsia-500), var(--purple-600));"></div>
+      </a>
+      <a href="#" class="btn-ramotion" onclick="return false" style="border-color:var(--purple-600); background:var(--purple-600); color:var(--white);">
+        <span class="btn-text">Contato</span>
+        <div class="btn-fill" style="background:linear-gradient(135deg, var(--fuchsia-500), var(--purple-400));"></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     5. CUBERTO — CONTACT CIRCLE
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-circle">
+  <div class="section-inner">
+    <span class="section-label">Cuberto</span>
+    <h2 class="section-title">Contact Circle com Texto Rotativo</h2>
+    <p class="section-desc">SVG textPath girando continuamente ao redor de um avatar central. Hover acelera a rotação.</p>
+    <span class="code-ref">rotating SVG textPath · @keyframes</span>
+
+    <div class="contact-demo reveal">
+      <div class="cb-contact-circle">
+        <svg viewBox="0 0 100 100" class="rotating-text">
+          <path id="circlePath" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none"/>
+          <text><textPath href="#circlePath">• CONTATO • FALE CONOSCO • CONTATO • FALE CONOSCO </textPath></text>
+        </svg>
+        <div class="inner-avatar">✦</div>
+      </div>
+      <!-- Segundo círculo variação -->
+      <div class="cb-contact-circle">
+        <svg viewBox="0 0 100 100" class="rotating-text" style="fill:var(--fuchsia-500); animation-direction:reverse;">
+          <path id="circlePath2" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none"/>
+          <text><textPath href="#circlePath2">• PROJETOS • VEJA MAIS • PROJETOS • VEJA MAIS </textPath></text>
+        </svg>
+        <div class="inner-avatar" style="background:linear-gradient(135deg, var(--fuchsia-400), var(--purple-600));">→</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     6. CUBERTO — HEADER
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-header">
+  <div class="section-inner">
+    <span class="section-label">Cuberto</span>
+    <h2 class="section-title">Header com Mix-Blend-Mode</h2>
+    <p class="section-desc">Header fixo que inverte as cores conforme o fundo muda, usando mix-blend-mode: difference.</p>
+    <span class="code-ref">mix-blend-mode: difference · fixed header</span>
+
+    <div class="cb-header-demo reveal">
+      <header class="cb-header">
+        <div class="cb-header-container">
+          <div class="cb-logo"><a href="#">STUDIO</a></div>
+          <nav class="cb-nav">
+            <ul class="cb-nav-list">
+              <li><a href="#" class="cb-nav-link">Trabalhos</a></li>
+              <li><a href="#" class="cb-nav-link">Serviços</a></li>
+              <li><button class="cb-menu-btn">Menu ☰</button></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+      <div class="header-bg-strip">Conteúdo da página por trás do header</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     7. CUBERTO — FLOATING CARDS
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-cards">
+  <div class="section-inner">
+    <span class="section-label">Cuberto</span>
+    <h2 class="section-title">Floating Cards (Growth)</h2>
+    <p class="section-desc">Cards com elevação suave no hover via translateY e box-shadow progressivo. Efeito de "flutuar".</p>
+    <span class="code-ref">translateY(-12px) · cubic-bezier shadow</span>
+
+    <div class="cards-grid">
+      <div class="cb-floating-card reveal">
+        <div class="card-content">
+          <span class="card-tag">Growth</span>
+          <h3>Redesign da Plataforma</h3>
+          <p>Aumento de 140% na conversão após redesign completo da experiência do usuário.</p>
+        </div>
+      </div>
+      <div class="cb-floating-card reveal">
+        <div class="card-content">
+          <span class="card-tag" style="color:var(--fuchsia-500); background:rgba(217,70,239,0.08);">Branding</span>
+          <h3>Nova Identidade Visual</h3>
+          <p>Criação de sistema visual completo com aplicações digitais e impressas.</p>
+        </div>
+      </div>
+      <div class="cb-floating-card reveal">
+        <div class="card-content">
+          <span class="card-tag" style="color:var(--success); background:rgba(16,185,129,0.08);">Performance</span>
+          <h3>Otimização de Velocidade</h3>
+          <p>Redução de 3.2s no LCP e melhoria de 45 pontos no Core Web Vitals.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     8. FRAMER — BAR CHART
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-chart">
+  <div class="section-inner">
+    <span class="section-label">Framer</span>
+    <h2 class="section-title">Animated Bar Chart</h2>
+    <p class="section-desc">Barras que crescem de baixo para cima com efeito cascata (stagger) ao entrar na viewport.</p>
+    <span class="code-ref">scaleY · transition-delay · IntersectionObserver</span>
+
+    <div style="max-width:500px;">
+      <div class="framer-chart reveal">
+        <div class="chart-bar" style="--d:0s; --h:40%;"></div>
+        <div class="chart-bar" style="--d:0.1s; --h:65%;"></div>
+        <div class="chart-bar" style="--d:0.2s; --h:35%;"></div>
+        <div class="chart-bar" style="--d:0.3s; --h:80%;"></div>
+        <div class="chart-bar" style="--d:0.4s; --h:55%;"></div>
+        <div class="chart-bar" style="--d:0.5s; --h:95%;"></div>
+        <div class="chart-bar" style="--d:0.6s; --h:70%;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     9. FRAMER — SEO SCORE
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-seo">
+  <div class="section-inner">
+    <span class="section-label">Framer</span>
+    <h2 class="section-title">SEO Score Circle</h2>
+    <p class="section-desc">Círculo SVG com stroke-dashoffset animado + contagem numérica de 0 a 100 ao entrar na viewport.</p>
+    <span class="code-ref">stroke-dashoffset · counter animation</span>
+
+    <div class="widgets-row">
+      <div class="seo-widget reveal">
+        <svg class="seo-circle" viewBox="0 0 100 100">
+          <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+          <circle class="circle-progress" cx="50" cy="50" r="45"></circle>
+        </svg>
+        <div class="seo-score"><span class="counter" data-target="100">0</span>%</div>
+        <div class="seo-label">SEO Score</div>
+      </div>
+
+      <div class="seo-widget reveal">
+        <svg class="seo-circle" viewBox="0 0 100 100">
+          <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+          <circle class="circle-progress" cx="50" cy="50" r="45" style="stroke:var(--fuchsia-500); stroke-dashoffset:283;"></circle>
+        </svg>
+        <div class="seo-score"><span class="counter" data-target="87">0</span>%</div>
+        <div class="seo-label">Performance</div>
+      </div>
+
+      <div class="seo-widget reveal">
+        <svg class="seo-circle" viewBox="0 0 100 100">
+          <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+          <circle class="circle-progress" cx="50" cy="50" r="45" style="stroke:var(--lavender-500); stroke-dashoffset:283;"></circle>
+        </svg>
+        <div class="seo-score"><span class="counter" data-target="95">0</span>%</div>
+        <div class="seo-label">Acessibilidade</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     10. STOCK LINE CHARTS
+     ═══════════════════════════════════ -->
+<div class="section" id="sec-stock">
+  <div class="section-inner">
+    <span class="section-label">Custom</span>
+    <h2 class="section-title">Stock Line Charts</h2>
+    <p class="section-desc">Gráficos de linha animados estilo bolsa de valores. A linha se desenha ao entrar na viewport e o gradiente de área aparece em seguida.</p>
+    <span class="code-ref">stroke-dashoffset · SVG polyline · area gradient</span>
+
+    <div class="charts-showcase">
+
+      <!-- Chart 1: Crescimento Forte -->
+      <div class="stock-card reveal" data-chart>
+        <div class="stock-card-header">
+          <div>
+            <h4>Receita Anual</h4>
+            <div class="stock-value">R$ 2.4M</div>
+          </div>
+          <span class="stock-change up">▲ +34.2%</span>
+        </div>
+        <svg class="stock-chart-svg" viewBox="0 0 300 120" preserveAspectRatio="none" data-points="0,95 30,90 60,85 90,80 120,70 150,65 180,50 210,45 240,30 270,20 300,10">
+          <defs>
+            <linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--purple-500)" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="var(--purple-500)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line class="grid-line" x1="0" y1="30" x2="300" y2="30"/>
+          <line class="grid-line" x1="0" y1="60" x2="300" y2="60"/>
+          <line class="grid-line" x1="0" y1="90" x2="300" y2="90"/>
+          <polygon class="chart-area" fill="url(#grad1)" points="0,110 0,95 30,90 60,85 90,80 120,70 150,65 180,50 210,45 240,30 270,20 300,10 300,110"/>
+          <polyline class="chart-line" stroke="var(--purple-500)" points="0,95 30,90 60,85 90,80 120,70 150,65 180,50 210,45 240,30 270,20 300,10"/>
+          <line class="hover-line" x1="0" y1="0" x2="0" y2="120"/>
+          <circle class="hover-dot" cx="0" cy="0" r="4" fill="var(--purple-500)"/>
+          <circle class="hover-dot hover-dot-glow" cx="0" cy="0" r="8" fill="var(--purple-500)" opacity="0.2"/>
+          <circle class="chart-dot" cx="300" cy="10" r="4" fill="var(--purple-500)"/>
+          <circle class="chart-dot" cx="300" cy="10" r="7" fill="var(--purple-500)" opacity="0.2"/>
+        </svg>
+        <div class="chart-tooltip"></div>
+        <div class="chart-labels"><span>Jan</span><span>Mar</span><span>Mai</span><span>Jul</span><span>Set</span><span>Nov</span></div>
+      </div>
+
+      <!-- Chart 2: Volátil subindo -->
+      <div class="stock-card reveal" data-chart>
+        <div class="stock-card-header">
+          <div>
+            <h4>Tráfego Orgânico</h4>
+            <div class="stock-value">187K</div>
+          </div>
+          <span class="stock-change up">▲ +18.7%</span>
+        </div>
+        <svg class="stock-chart-svg" viewBox="0 0 300 120" preserveAspectRatio="none" data-points="0,100 30,85 60,90 90,70 120,75 150,55 180,60 210,40 240,50 270,25 300,15">
+          <defs>
+            <linearGradient id="grad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--lavender-500)" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="var(--lavender-500)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line class="grid-line" x1="0" y1="30" x2="300" y2="30"/>
+          <line class="grid-line" x1="0" y1="60" x2="300" y2="60"/>
+          <line class="grid-line" x1="0" y1="90" x2="300" y2="90"/>
+          <polygon class="chart-area" fill="url(#grad2)" points="0,110 0,100 30,85 60,90 90,70 120,75 150,55 180,60 210,40 240,50 270,25 300,15 300,110"/>
+          <polyline class="chart-line" stroke="var(--lavender-500)" points="0,100 30,85 60,90 90,70 120,75 150,55 180,60 210,40 240,50 270,25 300,15"/>
+          <line class="hover-line" x1="0" y1="0" x2="0" y2="120"/>
+          <circle class="hover-dot" cx="0" cy="0" r="4" fill="var(--lavender-500)"/>
+          <circle class="hover-dot hover-dot-glow" cx="0" cy="0" r="8" fill="var(--lavender-500)" opacity="0.2"/>
+          <circle class="chart-dot" cx="300" cy="15" r="4" fill="var(--lavender-500)"/>
+          <circle class="chart-dot" cx="300" cy="15" r="7" fill="var(--lavender-500)" opacity="0.2"/>
+        </svg>
+        <div class="chart-tooltip"></div>
+        <div class="chart-labels"><span>Jan</span><span>Mar</span><span>Mai</span><span>Jul</span><span>Set</span><span>Nov</span></div>
+      </div>
+
+      <!-- Chart 3: Queda e recuperação -->
+      <div class="stock-card reveal" data-chart>
+        <div class="stock-card-header">
+          <div>
+            <h4>Conversões</h4>
+            <div class="stock-value">4.8K</div>
+          </div>
+          <span class="stock-change up">▲ +7.3%</span>
+        </div>
+        <svg class="stock-chart-svg" viewBox="0 0 300 120" preserveAspectRatio="none" data-points="0,50 30,55 60,70 90,85 120,90 150,80 180,60 210,45 240,35 270,25 300,20">
+          <defs>
+            <linearGradient id="grad3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--fuchsia-500)" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="var(--fuchsia-500)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line class="grid-line" x1="0" y1="30" x2="300" y2="30"/>
+          <line class="grid-line" x1="0" y1="60" x2="300" y2="60"/>
+          <line class="grid-line" x1="0" y1="90" x2="300" y2="90"/>
+          <polygon class="chart-area" fill="url(#grad3)" points="0,110 0,50 30,55 60,70 90,85 120,90 150,80 180,60 210,45 240,35 270,25 300,20 300,110"/>
+          <polyline class="chart-line" stroke="var(--fuchsia-500)" points="0,50 30,55 60,70 90,85 120,90 150,80 180,60 210,45 240,35 270,25 300,20"/>
+          <line class="hover-line" x1="0" y1="0" x2="0" y2="120"/>
+          <circle class="hover-dot" cx="0" cy="0" r="4" fill="var(--fuchsia-500)"/>
+          <circle class="hover-dot hover-dot-glow" cx="0" cy="0" r="8" fill="var(--fuchsia-500)" opacity="0.2"/>
+          <circle class="chart-dot" cx="300" cy="20" r="4" fill="var(--fuchsia-500)"/>
+          <circle class="chart-dot" cx="300" cy="20" r="7" fill="var(--fuchsia-500)" opacity="0.2"/>
+        </svg>
+        <div class="chart-tooltip"></div>
+        <div class="chart-labels"><span>Jan</span><span>Mar</span><span>Mai</span><span>Jul</span><span>Set</span><span>Nov</span></div>
+      </div>
+
+      <!-- Chart 4: Crescimento estável -->
+      <div class="stock-card reveal" data-chart>
+        <div class="stock-card-header">
+          <div>
+            <h4>Ticket Médio</h4>
+            <div class="stock-value">R$ 312</div>
+          </div>
+          <span class="stock-change up">▲ +12.1%</span>
+        </div>
+        <svg class="stock-chart-svg" viewBox="0 0 300 120" preserveAspectRatio="none" data-points="0,100 30,95 60,88 90,82 120,78 150,72 180,65 210,58 240,48 270,38 300,28">
+          <defs>
+            <linearGradient id="grad4" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--success)" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="var(--success)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line class="grid-line" x1="0" y1="30" x2="300" y2="30"/>
+          <line class="grid-line" x1="0" y1="60" x2="300" y2="60"/>
+          <line class="grid-line" x1="0" y1="90" x2="300" y2="90"/>
+          <polygon class="chart-area" fill="url(#grad4)" points="0,110 0,100 30,95 60,88 90,82 120,78 150,72 180,65 210,58 240,48 270,38 300,28 300,110"/>
+          <polyline class="chart-line" stroke="var(--success)" points="0,100 30,95 60,88 90,82 120,78 150,72 180,65 210,58 240,48 270,38 300,28"/>
+          <line class="hover-line" x1="0" y1="0" x2="0" y2="120"/>
+          <circle class="hover-dot" cx="0" cy="0" r="4" fill="var(--success)"/>
+          <circle class="hover-dot hover-dot-glow" cx="0" cy="0" r="8" fill="var(--success)" opacity="0.2"/>
+          <circle class="chart-dot" cx="300" cy="28" r="4" fill="var(--success)"/>
+          <circle class="chart-dot" cx="300" cy="28" r="7" fill="var(--success)" opacity="0.2"/>
+        </svg>
+        <div class="chart-tooltip"></div>
+        <div class="chart-labels"><span>Jan</span><span>Mar</span><span>Mai</span><span>Jul</span><span>Set</span><span>Nov</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     11. FOOTER
+     ═══════════════════════════════════ -->
+<footer class="site-footer" id="sec-footer">
+  <div class="footer-inner">
+
+    <!-- Rotating circle decoration -->
+    <div class="footer-circle-wrap">
+      <svg width="180" height="180" viewBox="0 0 100 100" style="animation: rotateText 20s linear infinite;">
+        <path id="footerCircle" d="M 50,50 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none"/>
+        <text fill="var(--lavender-300)" font-size="6" font-family="Sora" letter-spacing="3" text-transform="uppercase">
+          <textPath href="#footerCircle">• MATRIZ MESTRE • COMPONENTES UI • DESIGN SYSTEM • </textPath>
+        </text>
+      </svg>
+    </div>
+
+    <div class="footer-top">
+      <div class="footer-brand">
+        <h3>Matriz Mestre</h3>
+        <p>Coleção curada de componentes UI clonados e adaptados. Prontos para uso em qualquer projeto.</p>
+        <div class="footer-social">
+          <a href="#" title="GitHub">GH</a>
+          <a href="#" title="Dribbble">Dr</a>
+          <a href="#" title="LinkedIn">Li</a>
+          <a href="#" title="Twitter">X</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Componentes</h5>
+        <ul>
+          <li><a href="#sec-figma">Video Container</a></li>
+          <li><a href="#sec-neil">Partners Grid</a></li>
+          <li><a href="#sec-zoom">Zoom Scroll</a></li>
+          <li><a href="#sec-btn">Botões Fill</a></li>
+          <li><a href="#sec-stock">Line Charts</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Interações</h5>
+        <ul>
+          <li><a href="#sec-circle">Contact Circle</a></li>
+          <li><a href="#sec-header">Header Blend</a></li>
+          <li><a href="#sec-cards">Floating Cards</a></li>
+          <li><a href="#sec-chart">Bar Chart</a></li>
+          <li><a href="#sec-seo">SEO Score</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Recursos</h5>
+        <ul>
+          <li><a href="#">Paleta de Cores</a></li>
+          <li><a href="#">Tipografia</a></li>
+          <li><a href="#">Documentação</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Matriz Mestre — Todos os direitos reservados.</span>
+      <a href="#" class="footer-cta">
+        Voltar ao topo <span class="arrow">↑</span>
+      </a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════ -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ══════════════════════════════════════════
+     REVEAL OBSERVER — RE-TRIGGERABLE
+     Animações reiniciam ao sair e voltar.
+     Se a animação estiver rodando, espera terminar.
+     ══════════════════════════════════════════ */
+
+  const ANIMATION_DURATIONS = {
+    reveal: 700,
+    chart: 2500,
+    counter: 3500,
+    bars: 1400
+  };
+
+  const animatingElements = new WeakMap();
+
+  function resetElement(el) {
+    if (animatingElements.has(el)) {
+      clearTimeout(animatingElements.get(el));
+      animatingElements.delete(el);
+    }
+    el.classList.remove('is-visible');
+
+    // Reset counters
+    const counter = el.querySelector('.counter');
+    if (counter) {
+      if (counter._interval) clearInterval(counter._interval);
+      if (counter._raf) cancelAnimationFrame(counter._raf);
+      counter.innerText = '0';
+    }
+
+    // Reset circle progress
+    el.querySelectorAll('.circle-progress').forEach(p => {
+      p.style.strokeDashoffset = '283';
+    });
+
+    // Reset chart lines
+    el.querySelectorAll('.chart-line').forEach(l => {
+      l.style.strokeDashoffset = '1000';
+    });
+  }
+
+  function animateElement(el) {
+    el.classList.add('is-visible');
+    let duration = ANIMATION_DURATIONS.reveal;
+
+    // ── Counter animation (SLOWER — ~3s via eased RAF) ──
+    const counter = el.querySelector('.counter');
+    if (counter) {
+      duration = Math.max(duration, ANIMATION_DURATIONS.counter);
+      const target = parseInt(counter.getAttribute('data-target'));
+      const totalDuration = 3000; // 3 seconds
+      const startTime = performance.now();
+
+      if (counter._interval) clearInterval(counter._interval);
+      if (counter._raf) cancelAnimationFrame(counter._raf);
+
+      function updateCounter(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / totalDuration, 1);
+        // Ease-out cubic for smooth deceleration
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(eased * target);
+        counter.innerText = current;
+        if (progress < 1) {
+          counter._raf = requestAnimationFrame(updateCounter);
+        }
+      }
+      counter._raf = requestAnimationFrame(updateCounter);
+    }
+
+    // Circle progress (SEO scores)
+    const progress = el.querySelector('.circle-progress');
+    if (progress && counter) {
+      const target = parseInt(counter.getAttribute('data-target'));
+      const offset = 283 - (283 * target / 100);
+      progress.style.strokeDashoffset = offset;
+    }
+
+    // Stock chart lines
+    const chartLines = el.querySelectorAll('.chart-line');
+    if (chartLines.length) {
+      duration = Math.max(duration, ANIMATION_DURATIONS.chart);
+      chartLines.forEach(l => { l.style.strokeDashoffset = '0'; });
+    }
+
+    // Bar chart
+    if (el.querySelector('.chart-bar')) {
+      duration = Math.max(duration, ANIMATION_DURATIONS.bars);
+    }
+
+    const timeout = setTimeout(() => {
+      animatingElements.delete(el);
+    }, duration);
+    animatingElements.set(el, timeout);
+  }
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!entry.target.classList.contains('is-visible')) {
+          animateElement(entry.target);
+        }
+      } else {
+        if (!animatingElements.has(entry.target)) {
+          resetElement(entry.target);
+        } else {
+          const existingTimeout = animatingElements.get(entry.target);
+          clearTimeout(existingTimeout);
+          const newTimeout = setTimeout(() => {
+            animatingElements.delete(entry.target);
+            const rect = entry.target.getBoundingClientRect();
+            const inView = rect.top < window.innerHeight && rect.bottom > 0;
+            if (!inView) resetElement(entry.target);
+          }, 800);
+          animatingElements.set(entry.target, newTimeout);
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+
+  /* ══════════════════════════════════════════
+     INTERACTIVE STOCK CHARTS — Hover tooltip
+     ══════════════════════════════════════════ */
+  document.querySelectorAll('[data-chart]').forEach(card => {
+    const svg = card.querySelector('.stock-chart-svg');
+    const tooltip = card.querySelector('.chart-tooltip');
+    if (!svg || !tooltip) return;
+
+    const pointsStr = svg.getAttribute('data-points');
+    if (!pointsStr) return;
+
+    // Parse points
+    const points = pointsStr.trim().split(/\s+/).map(p => {
+      const [x, y] = p.split(',').map(Number);
+      return { x, y };
+    });
+
+    const hoverLine = svg.querySelector('.hover-line');
+    const hoverDots = svg.querySelectorAll('.hover-dot');
+
+    // Months for label
+    const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+    // Get the value label from the card header (R$, K, %)
+    const valueEl = card.querySelector('.stock-value');
+    const valueText = valueEl ? valueEl.textContent.trim() : '';
+    // Extract prefix and suffix
+    let prefix = '', suffix = '';
+    if (valueText.startsWith('R$')) prefix = 'R$ ';
+    else if (valueText.endsWith('K')) suffix = 'K';
+    else if (valueText.endsWith('M')) { prefix = 'R$ '; suffix = 'M'; }
+
+    // Map SVG y (0=top, 110=bottom) to a display value
+    // y=10 -> high value, y=100 -> low value
+    function yToValue(y) {
+      // Normalize: 110 is baseline (0%), 0 is max (100%)
+      const normalized = 1 - ((y - 5) / 105);
+      const maxVal = parseFloat(valueText.replace(/[^0-9.]/g, '')) || 100;
+      const val = (normalized * maxVal).toFixed(1);
+      return prefix + val + suffix;
+    }
+
+    // Interpolate Y at a given X along the polyline
+    function getYAtX(targetX) {
+      // Find the two surrounding points
+      for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        if (targetX >= p1.x && targetX <= p2.x) {
+          const t = (targetX - p1.x) / (p2.x - p1.x);
+          return p1.y + t * (p2.y - p1.y);
+        }
+      }
+      // Edge cases
+      if (targetX <= points[0].x) return points[0].y;
+      return points[points.length - 1].y;
+    }
+
+    // Get month from X position
+    function getMonth(x) {
+      const index = Math.round((x / 300) * 11);
+      return months[Math.min(index, 11)];
+    }
+
+    svg.addEventListener('mousemove', (e) => {
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const svgX = (mouseX / rect.width) * 300;
+      const svgY = getYAtX(svgX);
+
+      // Update hover line
+      if (hoverLine) {
+        hoverLine.setAttribute('x1', svgX);
+        hoverLine.setAttribute('x2', svgX);
+        hoverLine.style.opacity = '1';
+      }
+
+      // Update hover dots
+      hoverDots.forEach(dot => {
+        dot.setAttribute('cx', svgX);
+        dot.setAttribute('cy', svgY);
+        dot.style.opacity = '1';
+      });
+
+      // Update tooltip
+      const month = getMonth(svgX);
+      const value = yToValue(svgY);
+      tooltip.textContent = month + ' — ' + value;
+      tooltip.style.opacity = '1';
+
+      // Position tooltip in card coordinates
+      const cardRect = card.getBoundingClientRect();
+      const tooltipX = e.clientX - cardRect.left;
+      const tooltipY = e.clientY - cardRect.top;
+      tooltip.style.left = tooltipX + 'px';
+      tooltip.style.top = tooltipY + 'px';
+    });
+
+    svg.addEventListener('mouseleave', () => {
+      if (hoverLine) hoverLine.style.opacity = '0';
+      hoverDots.forEach(dot => { dot.style.opacity = '0'; });
+      tooltip.style.opacity = '0';
+    });
+  });
+
+
+  /* ── Figma: Video auto-play on scroll ── */
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const video = entry.target.querySelector('video');
+      if (!video) return;
+      if (entry.isIntersecting) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-scroll-video]').forEach(el => videoObserver.observe(el));
+
+
+  /* ── Ramotion: Zoom on scroll ── */
+  const zoomContainer = document.getElementById('zoomContainer');
+  const zoomElement = document.getElementById('zoomElement');
+
+  if (zoomContainer && zoomElement) {
+    window.addEventListener('scroll', () => {
+      const rect = zoomContainer.getBoundingClientRect();
+      const viewH = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, 1 - (rect.top / viewH)));
+
+      const containerScale = 0.8 + (progress * 0.2);
+      const innerScale = 1.15 - (progress * 0.15);
+
+      zoomContainer.style.transform = `scale(${Math.min(containerScale, 1)})`;
+      zoomElement.style.transform = `scale(${Math.max(innerScale, 1)})`;
+
+      if (containerScale >= 0.99) {
+        zoomContainer.style.borderRadius = '0px';
+      } else {
+        zoomContainer.style.borderRadius = '24px';
+      }
+    });
+  }
+
+
+  /* ── Footer: Voltar ao topo ── */
+  const footerCta = document.querySelector('.footer-cta');
+  if (footerCta) {
+    footerCta.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+});
+</script>
+
+</body>
+</html>
