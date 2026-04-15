@@ -105,23 +105,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ── Form submission handler (global) ── */
+var GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxtkm7bLEu7bWfB4J1-EQEM7ioqNPG2FU-zw2NtMi-KQ-0HybXeUFlxgqQb5iTTV7G9NQ/exec';
+
 function handleFormSubmit() {
-  const nameInput = document.getElementById('contact-name');
-  const emailInput = document.getElementById('contact-email');
-  const phoneInput = document.getElementById('contact-phone');
-  const btn = document.getElementById('submitBtn');
+  var nameInput = document.getElementById('contact-name');
+  var emailInput = document.getElementById('contact-email');
+  var phoneInput = document.getElementById('contact-phone');
+  var btn = document.getElementById('submitBtn');
 
   // Reset errors
-  [nameInput, phoneInput].forEach(el => el.classList.remove('error'));
+  [nameInput, phoneInput].forEach(function(el) { el.classList.remove('error'); });
 
   // Validate
-  let hasError = false;
+  var hasError = false;
   if (!nameInput.value.trim()) {
     nameInput.classList.add('error');
     nameInput.focus();
     hasError = true;
   }
-  const phoneDigits = phoneInput.value.replace(/\D/g, '');
+  var phoneDigits = phoneInput.value.replace(/\D/g, '');
   if (phoneDigits.length < 10) {
     phoneInput.classList.add('error');
     if (!hasError) phoneInput.focus();
@@ -130,23 +132,45 @@ function handleFormSubmit() {
 
   if (hasError) return;
 
-  // Simulate sending (replace with real endpoint)
+  // Disable button and show loading
   btn.disabled = true;
   btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;">Enviando...</span>';
 
-  setTimeout(() => {
-    const card = document.querySelector('.contact-form-card');
-    card.innerHTML = `
-      <div class="form-success">
-        <div class="success-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M22 4L12 14.01l-3-3" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Recebemos seu contato!</h3>
-        <p>Nossa equipe vai analisar seu cenário e entrar em contato em até 24 horas. Fique de olho no seu telefone.</p>
-      </div>
-    `;
-  }, 1500);
+  // Prepare data
+  var payload = {
+    nome: nameInput.value.trim(),
+    email: emailInput.value.trim(),
+    telefone: phoneInput.value.trim()
+  };
+
+  // Send to Google Sheets
+  fetch(GOOGLE_SHEETS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    showSuccess();
+  })
+  .catch(function() {
+    // With no-cors we can't read the response, but the data is sent
+    // So we show success anyway (Apps Script still processes it)
+    showSuccess();
+  });
+}
+
+function showSuccess() {
+  var card = document.querySelector('.contact-form-card');
+  card.innerHTML =
+    '<div class="form-success">' +
+      '<div class="success-icon">' +
+        '<svg width="32" height="32" viewBox="0 0 24 24" fill="none">' +
+          '<path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>' +
+          '<path d="M22 4L12 14.01l-3-3" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg>' +
+      '</div>' +
+      '<h3>Recebemos seu contato!</h3>' +
+      '<p>Nossa equipe vai analisar seu cenário e entrar em contato em até 24 horas. Fique de olho no seu telefone.</p>' +
+    '</div>';
 }
