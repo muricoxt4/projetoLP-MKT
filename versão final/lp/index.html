@@ -45,7 +45,7 @@
       Sua empresa não precisa de<br>"mais marketing". Ela precisa de um <span class="gradient-text">motor de vendas que não para.</span>
     </h1>
     <p class="hero-sub reveal reveal-delay-2">
-      Unimos tráfego pago de alta performance, tecnologia de gestão e treinamento comercial para transformar seus cliques em faturamento real. Nada de relatórios bonitos que não mudam o seu caixa.
+      Unimos tráfego de alta performance, tecnologia de gestão e treinamento comercial para transformar seus cliques em faturamento real. Nada de relatórios bonitos que não mudam o seu caixa.
     </p>
     <div class="hero-cta-group reveal reveal-delay-3">
       <a href="#diagnostico" class="btn-primary">
@@ -550,6 +550,12 @@
         <div class="form-group">
           <label for="contact-phone">Telefone *</label>
           <input type="tel" id="contact-phone" placeholder="(00) 00000-0000" required>
+        </div>
+
+        <!-- Honeypot: campo invisível, só bots preenchem -->
+        <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;overflow:hidden;" aria-hidden="true" tabindex="-1">
+          <label for="contact-company">Empresa</label>
+          <input type="text" id="contact-company" name="company" autocomplete="off" tabindex="-1">
         </div>
 
         <button type="button" class="btn-primary btn-submit" id="submitBtn" onclick="handleFormSubmit()">

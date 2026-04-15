@@ -102,21 +102,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ── Anti-spam: registra o momento em que a página carregou ── */
+  window._formLoadTime = Date.now();
+
 });
 
-/* ── Form submission handler (global) ── */
+
+/* ═══════════════════════════════════════════
+   FORM SUBMISSION + ANTI-SPAM
+   ═══════════════════════════════════════════ */
+
 var GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxtkm7bLEu7bWfB4J1-EQEM7ioqNPG2FU-zw2NtMi-KQ-0HybXeUFlxgqQb5iTTV7G9NQ/exec';
+var MIN_TIME_SECONDS = 3;
 
 function handleFormSubmit() {
   var nameInput = document.getElementById('contact-name');
   var emailInput = document.getElementById('contact-email');
   var phoneInput = document.getElementById('contact-phone');
+  var honeypot = document.getElementById('contact-company');
   var btn = document.getElementById('submitBtn');
 
   // Reset errors
   [nameInput, phoneInput].forEach(function(el) { el.classList.remove('error'); });
 
-  // Validate
+  /* ── Anti-spam 1: Honeypot ──
+     Campo invisível. Se foi preenchido, é bot.
+     Finge que enviou para não alertar o bot. */
+  if (honeypot && honeypot.value.trim() !== '') {
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;">Enviando...</span>';
+    setTimeout(function() { showSuccess(); }, 1500);
+    return;
+  }
+
+  /* ── Anti-spam 2: Tempo mínimo ──
+     Se o envio aconteceu em menos de 3 segundos
+     após a página carregar, é bot.
+     Finge que enviou. */
+  var elapsed = (Date.now() - (window._formLoadTime || 0)) / 1000;
+  if (elapsed < MIN_TIME_SECONDS) {
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;">Enviando...</span>';
+    setTimeout(function() { showSuccess(); }, 1500);
+    return;
+  }
+
+  /* ── Validação dos campos ── */
   var hasError = false;
   if (!nameInput.value.trim()) {
     nameInput.classList.add('error');
@@ -132,18 +163,16 @@ function handleFormSubmit() {
 
   if (hasError) return;
 
-  // Disable button and show loading
+  /* ── Envio real para o Google Sheets ── */
   btn.disabled = true;
   btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;">Enviando...</span>';
 
-  // Prepare data
   var payload = {
     nome: nameInput.value.trim(),
     email: emailInput.value.trim(),
     telefone: phoneInput.value.trim()
   };
 
-  // Send to Google Sheets
   fetch(GOOGLE_SHEETS_URL, {
     method: 'POST',
     mode: 'no-cors',
@@ -154,8 +183,6 @@ function handleFormSubmit() {
     showSuccess();
   })
   .catch(function() {
-    // With no-cors we can't read the response, but the data is sent
-    // So we show success anyway (Apps Script still processes it)
     showSuccess();
   });
 }
