@@ -3,7 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> limaHUB | Marketing de Performance + Vendas</title>
+<title>limaHUB | Marketing de Performance + Vendas</title>
+<meta name="description" content="Unimos tráfego de alta performance, tecnologia de gestão e treinamento comercial para transformar seus cliques em faturamento real. Diagnóstico gratuito em 24h.">
+<meta name="robots" content="index, follow">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="limaHUB | Marketing de Performance + Vendas">
+<meta property="og:description" content="Unimos tráfego de alta performance, tecnologia de gestão e treinamento comercial para transformar seus cliques em faturamento real.">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="limaHUB | Marketing de Performance + Vendas">
+<meta name="twitter:description" content="Unimos tráfego de alta performance, tecnologia de gestão e treinamento comercial para transformar seus cliques em faturamento real.">
+<!-- Preconnect para Google Fonts (melhora performance de carregamento) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -27,7 +40,7 @@
       <li><a href="#cases">Cases</a></li>
       <li><a href="#diagnostico" class="nav-cta">Diagnóstico Grátis →</a></li>
     </ul>
-    <button class="mobile-menu-btn" onclick="document.getElementById('diagnostico').scrollIntoView({behavior:'smooth'})">Diagnóstico →</button>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Ir para diagnóstico gratuito">Diagnóstico →</button>
   </div>
 </header>
 
@@ -182,7 +195,7 @@
      SOLUÇÃO
      ═══════════════════════════════════ -->
 <section class="section solution-section" id="solucao">
-  <div class="section-inner" style="position:relative; z-index:2;">
+  <div class="section-inner solution-inner">
     <span class="section-label reveal">A Solução</span>
     <h2 class="section-title reveal reveal-delay-1">Não somos "mais uma agência".<br>Somos seus parceiros de Growth e Operações.</h2>
     <p class="section-desc reveal reveal-delay-2">Construímos o ecossistema completo que seu negócio precisa: do primeiro anúncio até a baixa da nota fiscal no seu ERP. Tudo conectado, tudo mensurável.</p>
@@ -206,7 +219,7 @@
     </div>
 
     <div class="solution-cta-wrap reveal">
-      <a href="#diagnostico" class="btn-primary" style="background:linear-gradient(135deg, var(--lavender-400), var(--fuchsia-400)); color:var(--purple-950);">
+      <a href="#diagnostico" class="btn-primary btn-primary--light">
         Quero Meu Diagnóstico Estratégico
         <span class="arrow">→</span>
       </a>
@@ -248,7 +261,7 @@
     </div>
 
     <!-- 2 a 6: Demais serviços em sequência -->
-    <div class="services-grid" style="margin-top: 24px;">
+    <div class="services-grid services-grid--secondary">
 
       <!-- 2. Tráfego Pago -->
       <div class="service-card reveal">
@@ -271,7 +284,7 @@
         <div class="service-icon seo">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke="#10b981" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="#10b981" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
-        <span class="service-tag" style="color:var(--success); background:rgba(16,185,129,0.08);">Orgânico</span>
+        <span class="service-tag service-tag--green">Orgânico</span>
         <h3>SEO de Performance</h3>
         <p>Construção de autoridade orgânica para que sua empresa apareça no Google sem precisar pagar por cada clique. Resultados que se acumulam mês a mês e reduzem sua dependência de anúncios pagos.</p>
         <div class="service-result">
@@ -286,7 +299,7 @@
         <div class="service-icon social">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M17 2H7a5 5 0 00-5 5v10a5 5 0 005 5h10a5 5 0 005-5V7a5 5 0 00-5-5z" stroke="var(--fuchsia-500)" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="var(--fuchsia-500)" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5" fill="var(--fuchsia-500)"/></svg>
         </div>
-        <span class="service-tag" style="color:var(--fuchsia-500); background:rgba(217,70,239,0.08);">Marca</span>
+        <span class="service-tag service-tag--fuchsia">Marca</span>
         <h3>Social Media Estratégico</h3>
         <p>Gestão de redes sociais focada em posicionamento e engajamento que converte. Não criamos posts bonitos para ganhar likes. Criamos conteúdo que posiciona sua marca como autoridade e gera demanda qualificada.</p>
         <div class="service-result">
@@ -301,7 +314,7 @@
         <div class="service-icon lp">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--purple-500)" stroke-width="2"/><path d="M3 9h18M9 21V9" stroke="var(--purple-500)" stroke-width="2"/></svg>
         </div>
-        <span class="service-tag" style="color:#3b82f6; background:rgba(59,130,246,0.08);">Conversão</span>
+        <span class="service-tag service-tag--blue">Conversão</span>
         <h3>Sites e Landing Pages de Alta Performance</h3>
         <p>Páginas ultra-rápidas, otimizadas para conversão e focadas na experiência do usuário. Aqui é onde o clique vira oportunidade real. Nada de sites vitrine: cada elemento é pensado para guiar o visitante até a ação.</p>
         <div class="service-result">
@@ -316,7 +329,7 @@
         <div class="service-icon erp">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/></svg>
         </div>
-        <span class="service-tag" style="color:#f59e0b; background:rgba(245,158,11,0.08);">Dados</span>
+        <span class="service-tag service-tag--amber">Dados</span>
         <h3>Configuração de ERPs e CRM</h3>
         <p>Implementamos e auditamos seus sistemas de gestão para que você tenha dados reais, não suposições. Sua operação organizada para você saber exatamente de onde vem cada centavo e qual canal está realmente gerando lucro.</p>
         <div class="service-result">
@@ -331,7 +344,7 @@
         <div class="service-icon training">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="var(--success)" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="var(--success)" stroke-width="2"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="var(--success)" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
-        <span class="service-tag" style="color:var(--success); background:rgba(16,185,129,0.08);">Vendas</span>
+        <span class="service-tag service-tag--green">Vendas</span>
         <h3>Treinamento de Vendas</h3>
         <p>Capacitamos seu time comercial para abordar, contornar objeções e fechar os leads que o marketing entrega. Garantimos que o investimento em tráfego não seja desperdiçado por um atendimento lento, sem técnica ou sem processo.</p>
         <div class="service-result">
@@ -539,23 +552,23 @@
 
         <div class="form-group">
           <label for="contact-name">Nome *</label>
-          <input type="text" id="contact-name" placeholder="Seu nome completo" required>
+          <input type="text" id="contact-name" placeholder="Seu nome completo" maxlength="100" required>
         </div>
 
         <div class="form-group">
           <label for="contact-email">Melhor E-mail <span class="optional-tag">(opcional)</span></label>
-          <input type="email" id="contact-email" placeholder="seu@email.com">
+          <input type="email" id="contact-email" placeholder="seu@email.com" maxlength="150">
         </div>
 
         <div class="form-group">
           <label for="contact-phone">Telefone *</label>
-          <input type="tel" id="contact-phone" placeholder="(00) 00000-0000" required>
+          <input type="tel" id="contact-phone" placeholder="(00) 00000-0000" maxlength="15" required>
         </div>
 
-        <!-- Honeypot: campo invisível, só bots preenchem -->
-        <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;overflow:hidden;" aria-hidden="true" tabindex="-1">
-          <label for="contact-company">Empresa</label>
-          <input type="text" id="contact-company" name="company" autocomplete="off" tabindex="-1">
+        <!-- Campo extra: não preencher (verificação automática) -->
+        <div class="form-field-extra" aria-hidden="true">
+          <label for="contact-website">Website</label>
+          <input type="text" id="contact-website" name="website" autocomplete="off" tabindex="-1">
         </div>
 
         <button type="button" class="btn-primary btn-submit" id="submitBtn" onclick="handleFormSubmit()">

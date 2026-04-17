@@ -1,10 +1,24 @@
+/* ── Estado privado do formulário (não exposto em window) ── */
+const _formState = { loadTime: 0 };
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Header scroll effect ── */
   const header = document.getElementById('siteHeader');
   window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 50);
+    try {
+      header.classList.toggle('scrolled', window.scrollY > 50);
+    } catch (e) { /* header pode não existir em páginas parciais */ }
   });
+
+  /* ── Mobile menu button ── */
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => {
+      const target = document.getElementById('diagnostico');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
 
   /* ── Reveal on scroll ── */
   const ANIMATION_DURATIONS = { reveal: 800, counter: 3200 };
@@ -102,10 +116,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ── Anti-spam: registra o momento em que a página carregou ── */
-  window._formLoadTime = Date.now();
+  /* ── Anti-spam: registra o momento em que a página carregou (privado) ── */
+  _formState.loadTime = Date.now();
 
 });
+
+
+/* ═══════════════════════════════════════════
+   UTILITÁRIOS DE VALIDAÇÃO E SANITIZAÇÃO
+   ═══════════════════════════════════════════ */
+
+/* Remove caracteres que podem injetar HTML/scripts e limita o tamanho */
+function sanitize(str) {
+  return str
+    .replace(/[<>"'`]/g, '')
+    .trim()
+    .slice(0, 200);
+}
+
+/* Valida formato mínimo de e-mail */
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
 
 
 /* ═══════════════════════════════════════════
@@ -113,47 +145,58 @@ document.addEventListener('DOMContentLoaded', () => {
    ═══════════════════════════════════════════ */
 
 var GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxtkm7bLEu7bWfB4J1-EQEM7ioqNPG2FU-zw2NtMi-KQ-0HybXeUFlxgqQb5iTTV7G9NQ/exec';
+var WHATSAPP_URL = 'https://wa.me/5542998542014?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20quero%20saber%20mais%20sobre%20o%20diagn%C3%B3stico%20de%20growth.';
 var MIN_TIME_SECONDS = 3;
 
 function handleFormSubmit() {
-  var nameInput = document.getElementById('contact-name');
+  var nameInput  = document.getElementById('contact-name');
   var emailInput = document.getElementById('contact-email');
   var phoneInput = document.getElementById('contact-phone');
-  var honeypot = document.getElementById('contact-company');
-  var btn = document.getElementById('submitBtn');
+  var honeypot   = document.getElementById('contact-website');
+  var btn        = document.getElementById('submitBtn');
 
-  // Reset errors
-  [nameInput, phoneInput].forEach(function(el) { el.classList.remove('error'); });
+  /* Limpa erros anteriores */
+  [nameInput, emailInput, phoneInput].forEach(function(el) {
+    el.classList.remove('error');
+  });
+  var prevErr = document.getElementById('form-network-error');
+  if (prevErr) prevErr.remove();
 
   /* ── Anti-spam 1: Honeypot ──
-     Campo invisível. Se foi preenchido, é bot.
-     Finge que enviou para não alertar o bot. */
+     Campo invisível. Se foi preenchido, é bot. Finge que enviou. */
   if (honeypot && honeypot.value.trim() !== '') {
     btn.disabled = true;
-    btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;">Enviando...</span>';
+    btn.textContent = 'Enviando...';
     setTimeout(function() { showSuccess(); }, 1500);
     return;
   }
 
   /* ── Anti-spam 2: Tempo mínimo ──
-     Se o envio aconteceu em menos de 3 segundos
-     após a página carregar, é bot.
-     Finge que enviou. */
-  var elapsed = (Date.now() - (window._formLoadTime || 0)) / 1000;
+     Envio em menos de 3s após carregar = bot. Finge que enviou. */
+  var elapsed = (Date.now() - (_formState.loadTime || 0)) / 1000;
   if (elapsed < MIN_TIME_SECONDS) {
     btn.disabled = true;
-    btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;">Enviando...</span>';
+    btn.textContent = 'Enviando...';
     setTimeout(function() { showSuccess(); }, 1500);
     return;
   }
 
   /* ── Validação dos campos ── */
   var hasError = false;
+
   if (!nameInput.value.trim()) {
     nameInput.classList.add('error');
     nameInput.focus();
     hasError = true;
   }
+
+  var emailVal = emailInput.value.trim();
+  if (emailVal && !isValidEmail(emailVal)) {
+    emailInput.classList.add('error');
+    if (!hasError) emailInput.focus();
+    hasError = true;
+  }
+
   var phoneDigits = phoneInput.value.replace(/\D/g, '');
   if (phoneDigits.length < 10) {
     phoneInput.classList.add('error');
@@ -165,12 +208,12 @@ function handleFormSubmit() {
 
   /* ── Envio real para o Google Sheets ── */
   btn.disabled = true;
-  btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;">Enviando...</span>';
+  btn.textContent = 'Enviando...';
 
   var payload = {
-    nome: nameInput.value.trim(),
-    email: emailInput.value.trim(),
-    telefone: phoneInput.value.trim()
+    nome:     sanitize(nameInput.value),
+    email:    sanitize(emailInput.value),
+    telefone: sanitize(phoneInput.value)
   };
 
   fetch(GOOGLE_SHEETS_URL, {
@@ -183,8 +226,22 @@ function handleFormSubmit() {
     showSuccess();
   })
   .catch(function() {
-    showSuccess();
+    showNetworkError(btn);
   });
+}
+
+function showNetworkError(btn) {
+  btn.disabled = false;
+  btn.innerHTML = 'QUERO MEU DIAGNÓSTICO ESTRATÉGICO <span class="arrow">→</span>';
+
+  var errDiv = document.createElement('div');
+  errDiv.id = 'form-network-error';
+  errDiv.className = 'form-network-error';
+  errDiv.innerHTML =
+    'Falha no envio. Verifique sua conexão e tente novamente, ou ' +
+    '<a href="' + WHATSAPP_URL + '" target="_blank" rel="noopener">fale direto pelo WhatsApp</a>.';
+
+  btn.parentNode.insertBefore(errDiv, btn);
 }
 
 function showSuccess() {
