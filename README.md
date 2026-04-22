@@ -1,135 +1,174 @@
-# limaHUB — Landing Page de Marketing
+# limaHUB — Landing Page de Growth e Vendas
 
-Landing page de alta conversão desenvolvida para a **limaHUB**, agência de marketing de performance e vendas. Projeto construído do zero com HTML, CSS e JavaScript puros — sem frameworks, sem dependências de build.
+Landing page institucional desenvolvida para representar a proposta da **limaHUB**, com foco em geração de leads qualificados através de um diagnóstico estratégico.
 
----
-
-## Visão geral
-
-A página tem como objetivo principal gerar leads qualificados por meio de um **diagnóstico estratégico gratuito**. O fluxo de conversão guia o visitante desde a consciência do problema até o preenchimento do formulário de contato via WhatsApp.
-
-### Seções da página
-
-| Seção | Objetivo |
-|---|---|
-| Hero | Proposta de valor + CTA principal |
-| Barra de métricas | Prova social com números animados |
-| Problema | Agitar a dor do cliente |
-| Solução | Apresentar a abordagem da agência |
-| Serviços | Detalhar os três pilares (tráfego, tecnologia, treinamento) |
-| Cases | Resultados reais de clientes |
-| Diagnóstico | Formulário de captura com envio via WhatsApp |
-| Footer | Navegação e informações de contato |
+Este projeto foi construído com foco em **performance, clareza de conversão e controle total do front-end**, sem uso de frameworks ou ferramentas externas de build.
 
 ---
 
-## Stack técnica
+## 🎯 Objetivo do projeto
 
-- **HTML5** semântico — estrutura acessível com landmarks, hierarquia de headings e atributos ARIA
-- **CSS3 puro** — design system baseado em CSS Custom Properties (variáveis), sem Tailwind ou Bootstrap
-- **JavaScript vanilla** — sem jQuery, sem frameworks; ES6+ com foco em performance
+A página foi pensada como um **ativo de conversão**, não apenas institucional.
 
----
+A estrutura conduz o usuário por uma jornada clara:
 
-## Design system
+1. Entendimento do problema
+2. Identificação com a dor
+3. Apresentação da solução
+4. Prova (cases e números)
+5. Conversão via formulário
 
-O projeto possui um design system próprio definido inteiramente em CSS variables no `:root`:
-
-- **Paleta**: tons de roxo (`--purple-500` a `--purple-950`) com acento fúcsia
-- **Tipografia**: `Sora` para títulos, `DM Sans` para corpo — carregadas do Google Fonts com `preconnect`
-- **Radii**: `--radius-sm` a `--radius-full`
-- **Sombras**: `--shadow-soft` e `--shadow-float`
-- **Transições**: `--transition-smooth` e `--transition-snappy`
-
-Regra fundamental: **nenhuma cor é hardcoded no CSS** — todos os valores passam pelas variáveis do sistema.
+Toda a construção segue lógica de **funil de vendas direto no front-end**.
 
 ---
 
-## Animações
+## 🧱 Stack utilizada
 
-As animações de entrada usam o padrão `.reveal` + `IntersectionObserver`:
+O projeto foi desenvolvido com tecnologias puras, sem abstrações:
 
-```css
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-```
+* **HTML5 semântico**
+* **CSS3 com Design System próprio**
+* **JavaScript Vanilla (ES6+)**
 
-- Só `transform` e `opacity` são animados (GPU-friendly, sem layout shift)
-- Suporte a `prefers-reduced-motion` para respeitar preferências de acessibilidade
-- Contadores de métricas animam via `requestAnimationFrame` com easing
+Sem uso de:
+
+* frameworks (React, Vue, etc.)
+* bibliotecas (jQuery, Bootstrap, etc.)
+* ferramentas de build (Webpack, Vite, etc.)
 
 ---
 
-## Formulário e integração WhatsApp
+## 🧠 Estrutura da Landing Page
 
-O formulário de diagnóstico não usa backend. O fluxo é:
+A página é composta por blocos estratégicos:
 
-1. Usuário preenche nome, telefone e desafio principal
-2. JavaScript valida os campos e aplica honeypot anti-spam
-3. Os dados são serializados em uma mensagem de texto
-4. O botão abre o WhatsApp Business com a mensagem pré-preenchida via `wa.me`
-
----
-
-## Responsividade
-
-Testado e funcional em:
-
-| Breakpoint | Dispositivo |
-|---|---|
-| 375px | Mobile pequeno |
-| 768px | Tablet / Mobile grande |
-| 1024px | Tablet largo |
-| 1280px+ | Desktop |
+| Seção        | Função                               |
+| ------------ | ------------------------------------ |
+| Hero         | Proposta de valor + CTA principal    |
+| Métricas     | Prova social com contadores animados |
+| Problema     | Conexão com a dor do cliente         |
+| Solução      | Apresentação do modelo de atuação    |
+| Serviços     | Estrutura de entrega em etapas       |
+| Cases        | Validação com resultados reais       |
+| Prova        | Autoridade e histórico               |
+| Diferenciais | Posicionamento estratégico           |
+| Formulário   | Conversão principal                  |
 
 ---
 
-## Estrutura de arquivos
+## 🎨 Design System
+
+Todo o visual foi estruturado com base em **CSS Variables**, centralizadas no `:root`:
+
+* Paleta principal baseada em roxo + fúcsia
+* Tipografia:
+
+  * **Sora** (títulos)
+  * **DM Sans** (texto)
+* Sistema de espaçamento, radius e sombras padronizados
+
+👉 Nenhuma cor é aplicada diretamente — tudo passa por variável.
+
+---
+
+## ⚡ Animações e Interações
+
+As animações seguem princípios de performance:
+
+* Uso de `IntersectionObserver` para entrada de elementos
+* Animação apenas de:
+
+  * `opacity`
+  * `transform`
+* Contadores animados via `requestAnimationFrame`
+* Respeito a `prefers-reduced-motion`
+
+Isso evita:
+
+* reflow
+* jank
+* perda de performance em dispositivos mais fracos
+
+---
+
+## 📲 Formulário e captura de leads
+
+Diferente da versão inicial, o projeto hoje possui:
+
+### Integração com Google Sheets
+
+O envio do formulário é feito via:
+
+* `fetch` (POST)
+* Apps Script como endpoint
+* Registro automático em planilha
+
+Trecho principal do fluxo: 
+
+* sanitização de dados
+* validação de campos
+* proteção contra spam
+* tratamento de erro de rede
+* feedback visual ao usuário
+
+---
+
+## 🛡️ Proteções implementadas
+
+O formulário possui mecanismos básicos de segurança:
+
+* **Honeypot invisível** (campo falso para bots)
+* **Delay mínimo de envio** (anti-bot)
+* **Sanitização de inputs**
+* **Validação de e-mail e telefone**
+* **Fallback para WhatsApp em caso de erro**
+
+---
+
+## 📁 Estrutura de arquivos
 
 ```
 projetoLP-MKT/
-├── lp/                    # Versão final — vai ao ar
-│   ├── index.html         # Toda a estrutura HTML da LP
-│   ├── styles.css         # Design system + estilos por seção
-│   └── script.js          # Interações, animações e formulário
-├── apoio/
-│   └── matrizMestre.html  # Biblioteca de componentes UI de referência
-├── CLAUDE.md              # Instruções para o agente de IA
-└── .gitignore
+├── index.html      # Estrutura completa da landing page
+├── styles.css      # Design system + estilos
+├── script.js       # Interações, animações e envio do formulário
+└── README.md
 ```
 
 ---
 
-## Como visualizar
+## 🌐 Deploy
 
-Abra `lp/index.html` diretamente no navegador — não há servidor ou build necessário.
+A página está publicada via **GitHub Pages**:
 
-Para uma experiência fiel ao deploy, use um servidor local simples:
-
-```bash
-# Python
-python -m http.server 8080 --directory lp
-
-# Node.js (npx serve)
-npx serve lp
-```
-
-Acesse em `http://localhost:8080`.
+* sem backend próprio
+* sem servidor dedicado
+* totalmente estática
 
 ---
 
-## Referências visuais
+## 🧩 Decisões de arquitetura
 
-O design foi inspirado em sites de agências e produtos de referência do mercado:
+Algumas escolhas importantes do projeto:
 
-- [Ramotion](https://ramotion.com) — composição e motion
-- [Cuberto](https://cuberto.com) — tipografia e hover states
-- [Framer](https://framer.com) — layout e gradientes
-- [Figma](https://figma.com) — sistema de cores e componentes
+* **Zero dependência externa** → controle total
+* **Front-end puro** → leve e rápido
+* **Integração via Apps Script** → substitui backend
+* **Foco em conversão** → não é um site institucional genérico
+* **Código legível e direto** → fácil manutenção
+
+---
+
+## 🧠 Observação final
+
+Esse projeto não é apenas uma landing page visual.
+
+Ele representa um modelo de construção baseado em:
+
+* lógica de vendas
+* controle de dados
+* performance real
+* e independência de ferramentas
+
+A ideia aqui não é só “ter uma LP bonita”,
+mas **ter um ativo que funciona como parte do processo comercial**.
