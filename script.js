@@ -216,18 +216,28 @@ function handleFormSubmit() {
     telefone: sanitize(phoneInput.value)
   };
 
-  fetch(GOOGLE_SHEETS_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(function() {
+fetch(GOOGLE_SHEETS_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'text/plain;charset=utf-8'
+  },
+  body: JSON.stringify(payload)
+})
+.then(function(response) {
+  return response.json();
+})
+.then(function(result) {
+  if (result.status === 'ok') {
     showSuccess();
-  })
-  .catch(function() {
+  } else {
     showNetworkError(btn);
-  });
+    console.error(result);
+  }
+})
+.catch(function(error) {
+  showNetworkError(btn);
+  console.error(error);
+});
 }
 
 function showNetworkError(btn) {
